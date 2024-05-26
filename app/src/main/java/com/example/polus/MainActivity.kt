@@ -1,5 +1,6 @@
 package com.example.polus
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.snackbar.Snackbar
@@ -12,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.polus.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +25,11 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+        if (firebaseAuth.currentUser == null) {
+            navigateToSignInActivity()
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -40,6 +47,23 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_logout -> {
+                    firebaseAuth.signOut()
+                    navigateToSignInActivity()
+                    true
+                }
+                else -> {
+                    navController.navigate(menuItem.itemId)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,5 +75,11 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun navigateToSignInActivity() {
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
