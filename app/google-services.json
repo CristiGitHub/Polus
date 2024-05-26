@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "680458791427",
+    "project_id": "polus-b6594",
+    "storage_bucket": "polus-b6594.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680458791427:android:fe17ed08573e4b3b3ebc36",
+        "android_client_info": {
+          "package_name": "com.example.polus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtRGr0m0-ciygZixafPPU-AbkWJihzXsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
