@@ -54,7 +54,5 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
-    //noinspection UseTomlInstead
-    implementation("com.google.firebase:firebase-analytics")
 
 }
