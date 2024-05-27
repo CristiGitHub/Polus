@@ -55,7 +55,5 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
-    //noinspection UseTomlInstead
-    implementation("com.google.firebase:firebase-analytics")
 
 }
