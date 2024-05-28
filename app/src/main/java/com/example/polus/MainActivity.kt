@@ -2,6 +2,7 @@ package com.example.polus
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -13,7 +14,9 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.polus.databinding.ActivityMainBinding
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.database
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +33,16 @@ class MainActivity : AppCompatActivity() {
         if (firebaseAuth.currentUser == null) {
             navigateToSignInActivity()
         }
+        val database = Firebase.database
+        val myRef = database.getReference("message")
+
+        myRef.setValue("Hello, World!").addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("FirebaseDatabase", "Data written successfully.")
+            } else {
+                Log.e("FirebaseDatabase", "Failed to write data.", task.exception)
+            }
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -37,6 +50,7 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null)
                     .setAnchorView(R.id.fab).show()
+            myRef.setValue("Salut")
         }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
