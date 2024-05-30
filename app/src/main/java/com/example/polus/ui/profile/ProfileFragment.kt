@@ -1,11 +1,12 @@
 package com.example.polus.ui.profile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.polus.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.moshi.Json
@@ -23,6 +24,8 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private val apiKey = "jA0aqOkI8mzbmFl7ApP+TA==2stEE0CCgwc1wH1b"
+    private lateinit var quoteAdapter: QuoteAdapter
+    private val quotes = mutableListOf<Quote>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,10 +39,17 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        setupRecyclerView()
         fetchQuoteOfTheDay()
         displayUserEmail()
 
         return root
+    }
+
+    private fun setupRecyclerView() {
+        quoteAdapter = QuoteAdapter(quotes)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = quoteAdapter
     }
 
     override fun onDestroyView() {
@@ -48,7 +58,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun fetchQuoteOfTheDay() {
-
         CoroutineScope(Dispatchers.IO).launch {
             val client = OkHttpClient()
             val request = Request.Builder()
@@ -69,23 +78,28 @@ class ProfileFragment : Fragment() {
                                 .add(KotlinJsonAdapterFactory())
                                 .build()
                             val type = com.squareup.moshi.Types.newParameterizedType(List::class.java, Quote::class.java)
-                            val quoteAdapter = moshi.adapter<List<Quote>>(type)
-                            val quotes = quoteAdapter.fromJson(responseBody)
-                            val quote = quotes?.get(0)?.text
+                            val quoteJsonAdapter = moshi.adapter<List<Quote>>(type)
+                            val fetchedQuotes = quoteJsonAdapter.fromJson(responseBody)
 
                             withContext(Dispatchers.Main) {
-                                binding.textProfile.text = quote ?: "No quote available"
+                                quotes.clear()
+                                if (fetchedQuotes != null) {
+                                    quotes.addAll(fetchedQuotes)
+                                }
+                                quoteAdapter.notifyDataSetChanged()
                             }
                         }
                     } else {
                         withContext(Dispatchers.Main) {
-                            binding.textProfile.text = "Failed to fetch quote"
+                            binding.textMessage.text = "Failed to fetch quote"
+                            binding.textMessage.visibility = View.VISIBLE
                         }
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    binding.textProfile.text = "An error occurred"
+                    binding.textMessage.text = "An error occurred"
+                    binding.textMessage.visibility = View.VISIBLE
                 }
             } finally {
                 withContext(Dispatchers.Main) {
