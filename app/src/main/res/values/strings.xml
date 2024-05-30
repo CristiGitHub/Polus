@@ -11,6 +11,8 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="type_your_password">Type Your Password</string>
+    <string name="menu_questions">Questions</string>
+
     <string name="sign_in">Sign In</string>
     <string name="not_registered_yet_sign_up">Not Registered Yet , Sign Up !</string>
     <string name="type_your_email">Type your Email</string>

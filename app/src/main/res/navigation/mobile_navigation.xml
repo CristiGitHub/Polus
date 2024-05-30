@@ -22,4 +22,35 @@
         android:name="com.example.polus.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_questions"
+        android:name="com.example.polus.ui.questions.QuestionsCreation"
+        android:label="Create Question"
+        tools:layout="@layout/fragment_questions_creation">
+        <action
+            android:id="@+id/action_createQuestionFragment_to_questionsListFragment"
+            app:destination="@id/questionsListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/questionsListFragment"
+        android:name="com.example.polus.ui.questions.QuestionsListFragment"
+        android:label="Questions List">
+        <!-- Other fragment attributes -->
+        <action
+            android:id="@+id/action_questionsListFragment_to_questionDetailFragment"
+            app:destination="@id/questionDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/questionDetailFragment"
+        android:name="com.example.polus.ui.questions.QuestionDetailFragment"
+        android:label="Question Detail">
+        <argument
+            android:name="questionId"
+            app:argType="string" />
+    </fragment>
+
+
 </navigation>
