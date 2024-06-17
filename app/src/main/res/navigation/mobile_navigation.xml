@@ -39,18 +39,19 @@
         android:label="Questions List">
         <!-- Other fragment attributes -->
         <action
-            android:id="@+id/action_questionsListFragment_to_questionDetailFragment"
-            app:destination="@id/questionDetailFragment" />
+            android:id="@+id/action_questionsListFragmentToQuestionDetailsFragment"
+            app:destination="@id/questionDetailsFragment"
+            app:popUpTo="@id/questionsListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/questionDetailFragment"
+        android:id="@+id/questionDetailsFragment"
         android:name="com.example.polus.ui.questions.QuestionDetailFragment"
-        android:label="Question Detail">
+        tools:layout="@layout/fragment_question_detail">
         <argument
             android:name="questionId"
-            app:argType="string" />
+            app:argType="integer" />
     </fragment>
-
 
 </navigation>

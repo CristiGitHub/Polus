@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.polus.R
 import com.example.polus.data.Comment
 
-class CommentAdapter(private val comments: List<Comment>) :
+class CommentAdapter(private var comments: List<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -18,6 +18,7 @@ class CommentAdapter(private val comments: List<Comment>) :
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = comments[position]
+        holder.commentTextView.text = comment.creator
         holder.commentTextView.text = comment.text
     }
 
@@ -25,7 +26,13 @@ class CommentAdapter(private val comments: List<Comment>) :
         return comments.size
     }
 
+    fun updateComments(newComments: List<Comment>) {
+        comments = newComments
+        notifyDataSetChanged()
+    }
+
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val commentTextView: TextView = itemView.findViewById(R.id.commentTextView)
+        val creatorTextView: TextView = itemView.findViewById(R.id.creatorTextView)
     }
 }

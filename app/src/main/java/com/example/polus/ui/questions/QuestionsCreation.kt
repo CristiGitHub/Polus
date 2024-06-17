@@ -8,11 +8,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.polus.R
+import com.example.polus.config.AppDatabase
 import com.example.polus.data.Question
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class QuestionsCreation : Fragment() {
 
@@ -20,6 +23,7 @@ class QuestionsCreation : Fragment() {
     private lateinit var descriptionEditText: EditText
     private lateinit var subjectEditText: EditText
     private lateinit var submitButton: Button
+    private lateinit var db: AppDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +36,8 @@ class QuestionsCreation : Fragment() {
         subjectEditText = view.findViewById(R.id.subjectEditText)
         submitButton = view.findViewById(R.id.submitButton)
 
+        db = AppDatabase.getDatabase(requireContext())
+
         submitButton.setOnClickListener {
             val title = titleEditText.text.toString().trim()
             val description = descriptionEditText.text.toString().trim()
@@ -39,7 +45,7 @@ class QuestionsCreation : Fragment() {
             val creator = FirebaseAuth.getInstance().currentUser?.uid ?: "Anonymous"
 
             if (title.isNotEmpty() && description.isNotEmpty() && subject.isNotEmpty()) {
-                saveQuestionToDatabase(Question(title, description, subject, creator))
+                saveQuestionToDatabase(Question(title = title, description = description, subject = subject, creator = creator))
             } else {
                 Toast.makeText(requireContext(), "All fields must be filled", Toast.LENGTH_SHORT).show()
             }
@@ -49,18 +55,12 @@ class QuestionsCreation : Fragment() {
     }
 
     private fun saveQuestionToDatabase(question: Question) {
-        val database = FirebaseDatabase.getInstance().reference
-        val questionId = database.child("questions").push().key
-        if (questionId != null) {
-            database.child("questions").child(questionId).setValue(question)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(requireContext(), "Question created successfully", Toast.LENGTH_SHORT).show()
-                        findNavController().navigate(R.id.action_createQuestionFragment_to_questionsListFragment)
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to create question", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.questionDao().insertQuestion(question)
+            launch(Dispatchers.Main) {
+                Toast.makeText(requireContext(), "Question created successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_createQuestionFragment_to_questionsListFragment)
+            }
         }
     }
 }

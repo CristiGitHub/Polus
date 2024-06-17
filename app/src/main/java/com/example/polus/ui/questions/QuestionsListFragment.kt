@@ -5,20 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.polus.R
+import com.example.polus.config.AppDatabase
 import com.example.polus.data.Question
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QuestionsListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: QuestionAdapter
     private val questionsList = mutableListOf<Question>()
+    private lateinit var db: AppDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,10 +32,12 @@ class QuestionsListFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.questionsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = QuestionAdapter(questionsList)
+        adapter = QuestionAdapter(questionsList) { question ->
+            navigateToQuestionDetails(question.id)
+        }
         recyclerView.adapter = adapter
 
-        recyclerView.adapter = adapter
+        db = AppDatabase.getDatabase(requireContext())
 
         fetchQuestionsFromDatabase()
 
@@ -40,29 +45,16 @@ class QuestionsListFragment : Fragment() {
     }
 
     private fun fetchQuestionsFromDatabase() {
-        val database = FirebaseDatabase.getInstance().reference.child("questions")
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                questionsList.clear()
-                for (questionSnapshot in snapshot.children) {
-                    val question = questionSnapshot.getValue(Question::class.java)
-                    if (question != null) {
-                        questionsList.add(question)
-                    }
-                }
-                adapter.notifyDataSetChanged()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val questions = db.questionDao().getAllQuestions()
+            withContext(Dispatchers.Main) {
+                adapter.updateQuestions(questions)
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle database error
-            }
-        })
+        }
     }
 
-
-    // TODO : implement navigation part
-    private fun navigateToQuestionDetail(questionId: String) {
-        val action = QuestionsListFragmentDirections.actionQuestionsListFragmentToQuestionDetailFragment(questionId)
-        requireActivity().findNavController().navigate(action)
+    private fun navigateToQuestionDetails(questionId: Int) {
+        val action = QuestionsListFragmentDirections.actionQuestionsListFragmentToQuestionDetailsFragment(questionId)
+        findNavController().navigate(action)
     }
 }
