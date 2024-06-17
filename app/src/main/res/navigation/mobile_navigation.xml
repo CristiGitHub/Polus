@@ -3,46 +3,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/questionListFragment">
+    app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/questionListFragment"
-        android:name="com.example.app.ui.question.QuestionListFragment"
-        android:label="Question List"
-        tools:layout="@layout/fragment_question_list">
+        android:id="@+id/nav_home"
+        android:name="com.example.polus.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.example.polus.ui.gallery.GalleryFragment"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.example.polus.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_questions"
+        android:name="com.example.polus.ui.questions.QuestionsCreation"
+        android:label="Create Question"
+        tools:layout="@layout/fragment_questions_creation">
         <action
-            android:id="@+id/action_questionListFragment_to_createQuestionFragment"
-            app:destination="@id/createQuestionFragment" />
+            android:id="@+id/action_createQuestionFragment_to_questionsListFragment"
+            app:destination="@id/questionsListFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/createQuestionFragment"
-        android:name="com.example.app.CreateQuestionFragment"
-        android:label="Create Question"
-        tools:layout="@layout/fragment_create_question" />
+        android:id="@+id/questionsListFragment"
+        android:name="com.example.polus.ui.questions.QuestionsListFragment"
+        android:label="Questions List">
+        <!-- Other fragment attributes -->
+        <action
+            android:id="@+id/action_questionsListFragmentToQuestionDetailsFragment"
+            app:destination="@id/questionDetailsFragment"
+            app:popUpTo="@id/questionsListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/questionDetailsFragment"
+        android:name="com.example.polus.ui.questions.QuestionDetailFragment"
+        tools:layout="@layout/fragment_question_detail">
+        <argument
+            android:name="questionId"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>
-
-<!--    <fragment-->
-<!--        android:id="@+id/nav_home"-->
-<!--        android:name="com.example.polus.ui.home.HomeFragment"-->
-<!--        android:label="@string/menu_home"-->
-<!--        tools:layout="@layout/fragment_home" />-->
-
-<!--    <fragment-->
-<!--        android:id="@+id/nav_gallery"-->
-<!--        android:name="com.example.polus.ui.gallery.GalleryFragment"-->
-<!--        android:label="@string/menu_gallery"-->
-<!--        tools:layout="@layout/fragment_gallery" />-->
-
-<!--    <fragment-->
-<!--        android:id="@+id/nav_slideshow"-->
-<!--        android:name="com.example.polus.ui.slideshow.SlideshowFragment"-->
-<!--        android:label="@string/menu_slideshow"-->
-<!--        tools:layout="@layout/fragment_slideshow" />-->
-
-<!--    <fragment-->
-<!--        android:id="@+id/nav_questions"-->
-<!--        android:name="com.example.polus.ui.questions."-->
-<!--        android:label="@string/menu_slideshow"-->
-<!--        tools:layout="@layout/fragment_slideshow" />-->
-<!--</navigation>-->
