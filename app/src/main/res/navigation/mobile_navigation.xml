@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/questionsListFragment">
 
-    <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.polus.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_profile"
@@ -23,11 +18,6 @@
         android:label="@string/menu_learning"
         tools:layout="@layout/fragment_learning" />
 
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.polus.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_questions"
